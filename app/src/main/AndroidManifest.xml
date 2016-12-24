@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cool.superfcking.apps.inventory">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".InventoryView"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DetailView"
+            android:label="@string/detail_title_new"
+            android:theme="@style/EditorTheme"
+            android:parentActivityName=".InventoryView" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".InventoryView" />
+        </activity>
+        <uses-feature android:name="android.hardware.camera"
+            android:required="true" />
+        <provider
+            android:authorities="cool.superfcking.apps.inventory"
+            android:name=".data.InventoryProvider"
+            android:exported="false"/>
+    </application>
+
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+
+</manifest>
