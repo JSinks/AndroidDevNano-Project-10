@@ -9,5 +9,5 @@
     <!-- Common margin value used throughout the app -->
     <dimen name="activity_margin">16dp</dimen>
 
-    <dimen name="image_max_height">256dp</dimen>
+    <dimen name="image_max_height">200dp</dimen>
 </resources>

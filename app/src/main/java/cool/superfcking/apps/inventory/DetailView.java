@@ -201,25 +201,14 @@ public class DetailView extends AppCompatActivity implements LoaderManager.Loade
                 (mImageUri == null && mUri == null)){
             Toast.makeText(this, getString(R.string.help_fields_missing), Toast.LENGTH_SHORT).show();
         } else {
-            //Safe to extract the byte string
-            byte[] imageData = null;
-            try {
-                InputStream iStream = getContentResolver().openInputStream(mImageUri);
-                imageData = ImageUtils.getBytes(iStream);
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG, "File not Found Exception occured when trying to get byte stream");
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "IO Exception occured when trying to get byte stream");
-            }
-
             ContentValues values = new ContentValues();
             values.put(InventoryEntry.COLUMN_PRODUCT_NAME, nameString);
             values.put(InventoryEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
             values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, priceString);
-            values.put(InventoryEntry.COLUMN_PRODUCT_IMAGE, imageData);
 
             String toastText;
             if (mUri == null) {
+                values.put(InventoryEntry.COLUMN_PRODUCT_IMAGE, retrieveImage());
                 Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
                 if (newUri != null){
                     toastText = getString(R.string.toast_product_added);
@@ -227,6 +216,11 @@ public class DetailView extends AppCompatActivity implements LoaderManager.Loade
                     toastText = getString(R.string.toast_product_add_error);
                 }
             } else {
+                byte [] outputImage = retrieveImage();
+                if (outputImage != null) {
+                    values.put(InventoryEntry.COLUMN_PRODUCT_IMAGE, retrieveImage());
+                }
+
                 int rowsUpdated = getContentResolver().update(mUri, values, null, null);
                 if (rowsUpdated > 0){
                     toastText = getString(R.string.toast_product_updated);
@@ -239,6 +233,24 @@ public class DetailView extends AppCompatActivity implements LoaderManager.Loade
             finish();
         }
 
+    }
+
+    private byte[] retrieveImage(){
+        // Check if there is an updated image to store, if so save it.
+        if (mImageUri == null){
+            return null;
+        } else {
+            try {
+                InputStream iStream = getContentResolver().openInputStream(mImageUri);
+                return ImageUtils.getBytes(iStream);
+            } catch (FileNotFoundException e) {
+                Log.e(LOG_TAG, "File not Found Exception occured when trying to get byte stream");
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IO Exception occured when trying to get byte stream");
+            }
+        }
+
+        return null;
     }
 
     private void deleteProduct(){
